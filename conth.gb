@@ -1,0 +1,254 @@
+'posisi mata 
+Dim pmatax# = 0
+Dim pmatay# = 0 
+Dim pmataz# = 4 
+
+'posisi titik pandang 
+Dim ppandangx# = 0 
+Dim ppandangy# = 0
+Dim ppandangz# = -25    
+
+Dim pindah# = 0.01    
+
+Dim alpha# = 0
+Dim beta# = 0
+
+Dim draw = 0
+
+'variabel untuk menyimpan gambar tekstur
+Dim tekstur,tekstur1,tekstur2
+tekstur = loadmipmaptexture("gbr/tx.jpg")                                        
+tekstur1 = loadmipmaptexture("gbr/atap.jpg") 
+tekstur2 = loadmipmaptexture("gbr/bunga1.jpg")
+  
+'persiapkan teks mode 
+TextMode (TEXT_OVERLAID)
+'untuk offset kebawah
+Dim y  
+y = 1
+'warna teks dalam format rgb dengan
+color (100,255,100)
+
+'untuk mengubah ukuran teks
+ResizeText(40,30)
+
+'kalimat text
+Dim teks$ = "Tekan A draw kubus" : gosub tulisTeks
+y = y + 1: teks$ = "Tekan S draw limas segiempat": gosub tulisTeks
+y = y + 1: teks$ = "Tekan D draw limas segitiga": gosub tulisTeks
+
+'untuk offset kebawah
+Dim v  
+v = 21
+'warna teks dalam format rgb dengan
+color (0,255,100)
+'kalimat text                                               
+Dim teks2$ = "Tekan VK right untuk lihat sisi kanan" : gosub tulisTeks2
+v = v + 0.2: teks2$ = "Tekan VK left untuk lihat sisi kiri": gosub tulisTeks2
+v = v + 0.2: teks2$ = "Tekan VK up untuk lihat sisi bawah": gosub tulisTeks2
+v = v + 0.2: teks2$ = "Tekan VK down untuk lihat sisi atas": gosub tulisTeks2 
+
+v = v + 0.2: teks2$ = "Tekan J untuk rotasi ke kiri": gosub tulisTeks2
+v = v + 0.2: teks2$ = "Tekan K untuk rotasi ke kanan": gosub tulisTeks2
+v = v + 0.2: teks2$ = "Tekan I untuk rotasi ke bawah": gosub tulisTeks2 
+v = v + 0.2: teks2$ = "Tekan M untuk rotasi ke atas": gosub tulisTeks2
+
+
+
+
+'beritahu bahwa akan menggunakan tekstur
+glEnable(gl_texture_2d)  
+
+while true
+'bersihkan layar tiap iterasi 
+glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+glLoadIdentity()                
+
+'set kamera look at titik
+gluLookAt(pmatax#, pmatay#, pmataz#, ppandangx#, ppandangy#, ppandangz#, 0,1,0) 'posisi mata, posisi titik pandang, vektor up (0,1,0)
+
+glRotatef(alpha#,0,1,0)        'rotasi dengan poros y
+glRotatef(beta#,1,0,0)         'rotasi dengan poros x
+
+ if(draw = 0) then
+    glEnable (GL_TEXTURE_2D)
+        glBindTexture (GL_TEXTURE_2D, tekstur)
+        glBegin(GL_QUADS)                        ' Draw a quad
+                    'glColor3f(0.0,1.0,0.0)                ' Set the color to green
+            glTexCoord2f(1,1):glVertex3f( 0.5, 0.5, 0.0)            ' kanan depan (atas)
+            glTexCoord2f(0,1):glVertex3f( -0.5, 0.5, 0.0)            ' kiri depan (atas)
+            glTexCoord2f(0,0):glVertex3f( -0.5, 0.5, 1.0)            ' kiri belakang (atas)
+            glTexCoord2f(1,0):glVertex3f( 0.5, 0.5, 1.0)            ' kanan belakang (atas)
+                    
+                    'glColor3f(1.0,0.5,0.0)                ' Set the color to orange
+            glTexCoord2f(1,1):glVertex3f( 0.5, -0.5, 0.0)            ' kanan depan (bawah)
+            glTexCoord2f(0,1):glVertex3f( -0.5, -0.5, 0.0)            ' kiri depan (bawah)
+            glTexCoord2f(0,0):glVertex3f( -0.5, -0.5, 1.0)            ' kiri belakang (bawah)
+            glTexCoord2f(1,0):glVertex3f( 0.5, -0.5, 1.0)            ' kanan belakang (bawah)
+
+                    'glColor3f(1.0,0.0,0.0)                ' Set the color to red
+            glTexCoord2f(0,1):glVertex3f( 0.5, 0.5, 0.0)            ' kanan atas (belakang)
+            glTexCoord2f(0,0):glVertex3f( -0.5, 0.5, 0.0)            ' kiri atas (belakang)
+            glTexCoord2f(1,0):glVertex3f( -0.5, -0.5, 0.0)            ' kiri bawah (belakang)
+            glTexCoord2f(1,1):glVertex3f( 0.5, -0.5, 0.0)            ' kanan bawah (belakang)
+
+                    'glColor3f(1.0,1.0,0.0)                ' Set the color to yellow     
+            glTexCoord2f(0,0):glVertex3f( 0.5, 0.5, 1.0)            ' kanan atas (depan)
+            glTexCoord2f(0,1):glVertex3f( -0.5, 0.5, 1.0)            ' kiri atas (depan)
+            glTexCoord2f(1,1):glVertex3f( -0.5, -0.5, 1.0)            ' kiri bawah (depan)
+            glTexCoord2f(1,0):glVertex3f( 0.5, -0.5, 1.0)            ' kanan bawah (depan)
+
+                    'glColor3f(0.0,0.0,1.0)                  ' Set the color to blue
+            glTexCoord2f(1,1):glVertex3f( -0.5, 0.5, 0.0)            ' kanan atas (left)
+            glTexCoord2f(1,0):glVertex3f( -0.5, 0.5, 1.0)            ' kiri atas (left)
+            glTexCoord2f(0,0):glVertex3f( -0.5, -0.5, 1.0)            ' kiri bawah (left)
+            glTexCoord2f(0,1):glVertex3f( -0.5, -0.5, 0.0)            ' kanan bawah (left)
+
+                    'glColor3f(1.0,0.0,1.0)                ' Set the color to violet
+            glTexCoord2f(1,1):glVertex3f( 0.5, 0.5, 1.0)            ' kanan atas (right)
+            glTexCoord2f(1,0):glVertex3f( 0.5, 0.5, 0.0)            ' kiri atas (right)
+            glTexCoord2f(0,0):glVertex3f( 0.5, -0.5, 0.0)            ' kiri bawah (right)
+            glTexCoord2f(0,1):glVertex3f( 0.5, -0.5, 1.0)            ' kanan bawah (right)
+        glEnd()
+
+elseif (draw = 1) then
+glBindTexture(gl_texture_2d, tekstur1)
+
+glBegin(GL_TRIANGLES)  
+    'sisi belakang 
+    glTexCoord2d(0.5,1):glVertex3f(0,1.3,0) 'atas
+    glTexCoord2d(1,0):glVertex3f(1,-0.5,-1) 'kanan
+    glTexCoord2d(0,0):glVertex3f(-1,-0.5,-1) 'kiri
+    
+    'sisi depan
+    glTexCoord2d(0.5,1):glVertex3f(0,1.3,0) 'atas
+    glTexCoord2d(1,0):glVertex3f(1,-0.5,1) 'kanan
+    glTexCoord2d(0,0):glVertex3f(-1,-0.5,1) 'kiri
+    
+    'sisi kanan
+    glTexCoord2d(0.5,1):glVertex3f(0,1.3,0) 'atas
+    glTexCoord2d(1,0):glVertex3f(1,-0.5,1) 'kanan
+    glTexCoord2d(0,0):glVertex3f(1,-0.5,-1) 'kiri
+    
+    'sisi kiri
+    glTexCoord2d(0.5,1):glVertex3f(0,1.3,0) 'atas
+    glTexCoord2d(1,0):glVertex3f(-1,-0.5,-1) 'kanan
+    glTexCoord2d(0,0):glVertex3f(-1,-0.5,1) 'kiri    
+
+glEnd()
+                                        
+       
+glBegin(GL_QUADS)  'sisi bawah 
+   'glColor3f(0,1,0) 'warna hijau
+   glTexCoord2d(0,1)
+   glVertex3f(1, -0.5, -1) 'kanan depan   
+   'glColor3f(1,0,0) 'warna merah
+   glTexCoord2d(0,0)
+   glVertex3f(1, -0.5, 1) 'kanan belakang 
+   'glColor3f(0,0,1) 'warna biru
+   glTexCoord2d(1,0)
+   glVertex3f(-1, -0.5, 1) 'kiri belakang 
+   'glColor3f(1,1,0) 'warna kuning 
+   glTexCoord2d(1,1)
+   glVertex3f(-1, -0.5, -1)'kiri depan 
+glEnd()                         
+
+elseif(draw = 2) then
+glBindTexture(gl_texture_2d, tekstur2)
+glBegin(GL_TRIANGLES)  'atap belakang 
+   'glColor3f(1,0,0) 'warna merah
+   glTexCoord2d(1,1)
+   glVertex3f(0, 1.3, 0) 'titik atas   
+   'glColor3f(0,0,1) 'warna biru
+   glTexCoord2d(0,0)
+   glVertex3f(-1, -0.5, -1) 'kiri bawah 
+   'glColor3f(1,1,0) 'warna kuning 
+   glTexCoord2d(1,0)
+   glVertex3f(1, -0.5, -1)'kanan bawah 
+glEnd()              
+              
+glBegin(GL_TRIANGLES)  'atap kanan 
+   'glColor3f(1,0,0) 'warna merah
+   glTexCoord2d(1,1)
+   glVertex3f(0, 1.3, 0) 'titik atas   
+   'glColor3f(0,0,1) 'warna biru
+   glTexCoord2d(0,0)
+   glVertex3f(0, -0.5, 1) 'kiri bawah 
+   'glColor3f(1,1,0) 'warna kuning 
+   glTexCoord2d(1,0)
+   glVertex3f(1, -0.5, -1)'kanan bawah 
+glEnd()
+
+glBegin(GL_TRIANGLES)  'atap bawah 
+   'glColor3f(1,0,0) 'warna merah
+   glTexCoord2d(1,1)
+   glVertex3f(0, -0.5 , 1) 'titik atas   
+   'glColor3f(0,0,1) 'warna biru
+   glTexCoord2d(0,0)
+   glVertex3f(1, -0.5, -1) 'kiri bawah 
+   'glColor3f(1,1,0) 'warna kuning 
+   glTexCoord2d(1,0)
+   glVertex3f(-1, -0.5, -1)'kanan bawah 
+glEnd() 
+
+glBegin(GL_TRIANGLES)  'atap kiri 
+   'glColor3f(1,0,0) 'warna merah
+   glTexCoord2d(1,1)
+   glVertex3f(0, 1.3, 0) 'titik atas   
+   'glColor3f(0,0,1) 'warna biru
+   glTexCoord2d(0,0)
+   glVertex3f(0, -0.5, 1) 'kiri bawah 
+   'glColor3f(1,1,0) 'warna kuning 
+   glTexCoord2d(1,0)
+   glVertex3f(-1, -0.5, -1)'kanan bawah 
+glEnd()         
+endif
+
+DrawText ()
+swapBuffers()
+
+if scankeydown(VK_Right) then 
+    pmatax# = pmatax# + pindah#             'pmata geser untuk melihat sisi kanan
+    'ppandangx# = ppandangx# + pindah#      'melirik ke kanan
+elseif scankeydown(VK_left) then 
+    pmatax# = pmatax# - pindah#        
+elseif scankeydown(VK_UP) then 
+    pmatay# = pmatay# - pindah#
+    'pmataz# = pmataz# - pindah#    'zoom in   
+elseif scankeydown(VK_DOWN) then 
+    pmatay# = pmatay# + pindah#
+    'pmataz# = pmataz# + pindah#    'zoom out
+   
+elseif KeyDown("K") then 
+    alpha# = alpha# + 1         'untuk rotasi ke kanan 
+elseif KeyDown("J") then 
+    alpha# = alpha# - 1         'untuk rotasi ke kiri
+elseif KeyDown("I") then 
+    beta# = beta# + 1         'untuk rotasi ke atas 
+elseif KeyDown("M") then 
+    beta# = beta# - 1         'untuk rotasi ke bawah
+   
+
+elseif scankeydown(ASC("A")) then 
+    draw = 0  
+elseif scankeydown(ASC("S")) then 
+    draw = 1  
+elseif scankeydown(ASC("D")) then 
+    draw = 2  
+
+endif  
+
+wend       
+
+  tulisTeks:   
+    locate (textcols() - len (teks$)) / 0, y
+    print teks$
+    y = y + 1
+    return  
+    
+
+  tulisTeks2:   
+    locate (textcols() - len (teks2$)) / 0, v
+    print teks2$
+    v = v + 1
+    return 
